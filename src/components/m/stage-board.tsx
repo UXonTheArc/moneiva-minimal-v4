@@ -79,7 +79,7 @@ export function StageBoard({ focus }: { focus?: Stage }) {
           {STAGES.map((st) => {
             const items = list.filter((t) => stageOf(t.name, t.stage) === st)
             return (
-              <div key={st} className={cn("flex flex-col rounded-2xl bg-secondary/60 p-2", focus === st && "ring-2 ring-primary")}>
+              <div key={st} className={cn("flex flex-col rounded-2xl bg-secondary/60 p-2", focus === st && "bg-primary/10")}>
                 <div className="px-2 pt-2 pb-3">
                   <div className="flex items-center gap-2">
                     <span className={cn("grid size-6 place-items-center rounded-full text-[12px] font-semibold text-white", st === "Autopilot" ? "bg-ok" : "bg-primary")}>
