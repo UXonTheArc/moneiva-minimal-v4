@@ -4,6 +4,7 @@ import Link from "next/link"
 import { AlertCircle, ArrowRight, Check, GraduationCap, MessageSquare } from "lucide-react"
 
 import { OperatorCard } from "@/components/m/operator"
+import { StageStrip } from "@/components/m/stage-board"
 import { WorkflowRow } from "@/components/m/automate"
 import { useDone } from "@/components/m/store"
 import { Card, Group, Icon, PageTitle, Row, Section, btn } from "@/components/m/ui"
@@ -35,6 +36,11 @@ export default function TodayPage() {
           </>
         }
       />
+
+      {/* The four steps, so anyone can see how far the Operator has come. */}
+      <div className="mb-8">
+        <StageStrip />
+      </div>
 
       {/* The one thing to do. */}
       <Card className="mb-4 overflow-hidden">

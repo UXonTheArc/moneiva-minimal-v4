@@ -29,3 +29,15 @@ export function useDone() {
   useSyncExternalStore(subscribe, () => version, () => 0)
   return (id: string) => done.has(id)
 }
+
+/** Stage moves made in this visit, shared by the board, Today and the agent pages. */
+const moved = new Map<string, string>()
+export function moveStage(name: string, to: string) {
+  moved.set(name, to)
+  version++
+  listeners.forEach((l) => l())
+}
+export function useStages() {
+  useSyncExternalStore(subscribe, () => version, () => 0)
+  return <T extends string>(name: string, fallback: T): T => (moved.get(name) as T) ?? fallback
+}

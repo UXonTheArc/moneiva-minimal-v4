@@ -1,6 +1,13 @@
-# Moneiva Minimal V3
+# Moneiva Minimal V4
 
-Minimal V2, reworked so the Operator is clearly a different kind of thing from the other agents. All data is synthetic.
+Minimal V3 with the four steps up front and Activity one tap away. All data is synthetic.
+
+## What changed from V3
+
+- **Activity is in the top nav:** Today, Review, Teach, Activity, then Automate. A red dot shows when something couldn't finish.
+- **The four steps sell the product.** Today opens with a Learn, Shadow, Review, Autopilot strip, with a count of request types at each step. Tap one to jump to the board.
+- **Teach opens on the board.** Every kind of email and call sits in its step, like the old Playbook. Filter by Email and texts or Calls, and open a card to move it up or back.
+- **Next.js 16.4.6**, which fixes a known security issue in 16.4.1.
 
 ## The model
 

@@ -19,6 +19,7 @@ const NAV = [
   { href: "/", label: "Today", icon: Sun, side: "work" },
   { href: "/review", label: "Review", icon: CheckCircle2, count: 0, side: "work" },
   { href: "/teach", label: "Teach", icon: GraduationCap, side: "work" },
+  { href: "/activity", label: "Activity", icon: History, side: "work" },
   { href: "/agents", label: "Automate", icon: Bot, side: "build" },
 ]
 
@@ -38,7 +39,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const left = REVIEW_ITEMS.filter((i) => !isDone(i.id)).length
   // A red dot only for work that couldn't finish and hasn't been looked at. "Needs you" already has its count on Review.
   const fails = isDone("seen-fails") ? 0 : ACTIVITY.filter((r) => r.status === "fail").length
-  const nav = NAV.map((n) => (n.href === "/review" ? { ...n, count: left } : n))
+  const nav = NAV.map((n) => (n.href === "/review" ? { ...n, count: left } : n.href === "/activity" ? { ...n, dot: fails > 0 } : n)) as ((typeof NAV)[number] & { count?: number; dot?: boolean })[]
 
   return (
     <>
@@ -62,6 +63,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
                   )}
                 >
                   {n.label}
+                  {n.dot && <span aria-label="Something couldn't finish" className="size-2 rounded-full bg-destructive" />}
                   {n.count ? (
                     <span className="grid size-[18px] place-items-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
                       {n.count}
@@ -74,18 +76,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className="ml-auto flex items-center gap-1 md:ml-0">
-            <Link
-              href={fails ? "/activity?filter=fail" : "/activity"}
-              aria-label={fails ? `Activity: ${fails} couldn't finish` : "Activity"}
-              title={fails ? `${fails} couldn't finish` : "Activity: everything that happened"}
-              className={cn(
-                "relative grid size-9 place-items-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground",
-                isActive(path, "/activity") && "bg-secondary text-foreground"
-              )}
-            >
-              <History className="size-[18px]" />
-              {fails > 0 && <span className="absolute top-1.5 right-1.5 size-2.5 rounded-full bg-destructive ring-2 ring-background" />}
-            </Link>
             <AccountMenu />
           </div>
         </div>
@@ -95,7 +85,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
       {/* Phone: a tab bar, like a native app. */}
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border/60 bg-background/80 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden">
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-5">
           {nav.map((n) => {
             const on = isActive(path, n.href)
             const Icon = n.icon
@@ -107,6 +97,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
               >
                 <Icon className="size-[22px]" strokeWidth={on ? 2.2 : 1.8} />
                 {n.label}
+                {n.dot && <span className="absolute top-1.5 left-1/2 ml-2 size-2.5 rounded-full bg-destructive ring-2 ring-background" />}
                 {n.count ? (
                   <span className="absolute top-1 left-1/2 ml-2 grid size-4 place-items-center rounded-full bg-destructive text-[10px] font-semibold text-white">
                     {n.count}

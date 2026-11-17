@@ -32,9 +32,17 @@ export const REQUEST_TYPES: RequestType[] = [
   { name: "Address correction", stage: "Shadow", matched: 0, of: 1, line: "Needs more emails before it can move", flag: "" },
   { name: "ETA or status request", stage: "Review", matched: 16, of: 34, line: "9 rejected \u00b7 8 couldn't finish", flag: "" },
   { name: "Proof of delivery request", stage: "Review", matched: 0, of: 1, line: "1 waiting for approval", flag: "" },
-  { name: "Auto-reply or out of office", stage: "Review", matched: 0, of: 0, line: "No emails this period", flag: "" },
-  { name: "Hold at terminal request", stage: "Review", matched: 1, of: 1, line: "Approved as written", flag: "" },
+  { name: "Auto-reply or out of office", stage: "Autopilot", matched: 22, of: 22, line: "Filed 22 on its own this week", flag: "" },
+  { name: "Hold at terminal request", stage: "Autopilot", matched: 14, of: 14, line: "Handled 14 on its own this week", flag: "" },
   { name: "Weight or class inspection", stage: "Review", matched: 0, of: 1, line: "1 rejected", flag: "" }
+]
+
+/** Kinds of call the Inbound phone line learns. Same four steps, kept apart from email so email counts stay the same. */
+export const CALL_TYPES: RequestType[] = [
+  { name: "Pickup status call", stage: "Review", matched: 7, of: 9, line: "2 calls to return", flag: "" },
+  { name: "Book a call back", stage: "Autopilot", matched: 11, of: 11, line: "Booked 11 on its own this week", flag: "" },
+  { name: "Delivery appointment call", stage: "Shadow", matched: 3, of: 4, line: "Needs more calls before it can move", flag: "" },
+  { name: "Billing question call", stage: "Learn", matched: 0, of: 0, line: "Heard 2 so far", flag: "" },
 ]
 
 export type Rule = { text: string; requestType: string; source: string; by: string; on: string; active: boolean }

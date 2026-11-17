@@ -6,6 +6,7 @@ import { ArrowRight, BookOpen, Check, CheckCircle2, X, FileText, FileUp, Graduat
 import { toast } from "sonner"
 
 import { OperatorCard } from "@/components/m/operator"
+import { StageBoard } from "@/components/m/stage-board"
 import { FactsSheet, type SheetFact } from "@/components/m/facts-sheet"
 import { useDone } from "@/components/m/store"
 import { Card, Empty, Field, Group, Icon, PageTitle, Row, Section, Select, btn, inputCls } from "@/components/m/ui"
@@ -23,7 +24,7 @@ type Open = { title: string; sub: string; facts: SheetFact[]; checkable?: boolea
 
 export type TeachPanel = "rules" | "types" | "email" | "right"
 
-export function Teach({ initialPhase, initialPanel }: { initialPhase: Phase; initialPanel?: TeachPanel }) {
+export function Teach({ initialPhase, initialPanel, focus }: { initialPhase: Phase; initialPanel?: TeachPanel; focus?: Stage }) {
   const [phase, setPhase] = useState<Phase>(initialPhase)
   const [q, setQ] = useState("")
   const [open, setOpen] = useState<Open>(null)
@@ -104,6 +105,8 @@ export function Teach({ initialPhase, initialPanel }: { initialPhase: Phase; ini
   return (
     <>
       <PageTitle title="Teach" lead="Teach the Operator how your team works. It learns through its agents, and every answer means it asks you less." />
+
+      <StageBoard focus={focus} />
 
       <OperatorCard className="mb-12" />
 
