@@ -6,7 +6,8 @@ import { ArrowRight, Mail, PhoneIncoming } from "lucide-react"
 import { toast } from "sonner"
 
 import { moveStage, useStages } from "@/components/m/store"
-import { Card, Segmented } from "@/components/m/ui"
+import { Card, Segmented, btn } from "@/components/m/ui"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import { CALL_TYPES, REQUEST_TYPES, STAGES, type RequestType, type Stage } from "@/lib/moneiva/data"
@@ -27,14 +28,16 @@ export function useStageCounts() {
   return STAGES.map((s) => ({ stage: s, count: ALL.filter((t) => stageOf(t.name, t.stage) === s).length }))
 }
 
-/** Today: the four steps in one line, each a jump into the board. */
+/** Today: the four steps in one line. Each opens a quick look at its column, with a way into Teach. */
 export function StageStrip() {
   const counts = useStageCounts()
+  const stageOf = useStages()
   return (
     <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
       {counts.map(({ stage, count }, i) => (
-        <Link key={stage} href={`/teach?step=${stage}#board`} className="group relative">
-          <Card className="h-full px-2 py-3 text-center transition group-hover:shadow-md sm:p-5 sm:text-left">
+        <Popover key={stage}>
+        <PopoverTrigger className="group relative text-left outline-none focus-visible:ring-4 focus-visible:ring-primary/30 rounded-2xl">
+          <Card className="h-full px-2 py-3 text-center transition group-hover:shadow-md group-data-[state=open]:shadow-md group-data-[state=open]:ring-2 group-data-[state=open]:ring-primary/40 sm:p-5 sm:text-left">
             <div className="flex flex-col items-center gap-1 text-[10px] font-semibold tracking-wide text-muted-foreground uppercase sm:flex-row sm:gap-2 sm:text-[12px]">
               <span className={cn("grid size-5 place-items-center rounded-full text-[11px] text-white", stage === "Autopilot" ? "bg-ok" : "bg-primary")}>{i + 1}</span>
               {STEP[stage].name}
@@ -43,7 +46,44 @@ export function StageStrip() {
             <div className="mt-1 hidden text-[13px] text-muted-foreground sm:block">{count === 1 ? "kind of request" : "kinds of request"}</div>
           </Card>
           {i < 3 && <ArrowRight className="absolute top-1/2 -right-[11px] z-10 hidden size-4 -translate-y-1/2 text-muted-foreground/50 sm:block" />}
-        </Link>
+        </PopoverTrigger>
+        <PopoverContent align={i < 2 ? "start" : "end"} className="w-[min(22rem,calc(100vw-2rem))] rounded-2xl p-0">
+          <div className="border-b border-border p-4">
+            <div className="flex items-center gap-2">
+              <span className={cn("grid size-6 place-items-center rounded-full text-[12px] font-semibold text-white", stage === "Autopilot" ? "bg-ok" : "bg-primary")}>{i + 1}</span>
+              <span className="text-[17px] font-semibold">{STEP[stage].name}</span>
+              <span className="ml-auto text-[13px] text-muted-foreground tabular-nums">{count}</span>
+            </div>
+            <p className="mt-1.5 text-[13px] text-muted-foreground">{STEP[stage].does}</p>
+          </div>
+          <ul className="max-h-72 divide-y divide-border overflow-y-auto">
+            {ALL.filter((t) => stageOf(t.name, t.stage) === stage).map((t) => (
+              <li key={t.name} className="flex items-start gap-2.5 px-4 py-2.5">
+                <span className="mt-0.5 text-muted-foreground [&_svg]:size-3.5">{t.agent === "email" ? <Mail /> : <PhoneIncoming />}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[14px] leading-snug font-medium">{t.name}</span>
+                  <span className="block text-[12px] text-muted-foreground">
+                    {t.flag === "ready" && stageOf(t.name, t.stage) === t.stage ? (
+                      <span className="font-medium text-primary">Ready to move up</span>
+                    ) : t.of ? (
+                      `${t.matched} of ${t.of} like your team`
+                    ) : (
+                      t.line
+                    )}
+                  </span>
+                </span>
+              </li>
+            ))}
+            {count === 0 && <li className="px-4 py-3 text-[14px] text-muted-foreground">None right now</li>}
+          </ul>
+          <div className="border-t border-border p-3">
+            <Link href={`/teach?step=${stage}#board`} className={cn(btn.primary, "w-full")}>
+              Open in Teach
+              <ArrowRight className="size-4" />
+            </Link>
+          </div>
+        </PopoverContent>
+        </Popover>
       ))}
     </div>
   )
